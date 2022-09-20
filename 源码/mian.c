@@ -294,7 +294,7 @@ void main()
         path=P0;
         Servo0PwmDuty=ctry(path);
         Motor0PwmDuty=35*pow;
-        Motor0PwmDuty_daoche=35*pow;
+        Motor0PwmDuty_daoche=30*pow;
         daoche();
     }
 }
