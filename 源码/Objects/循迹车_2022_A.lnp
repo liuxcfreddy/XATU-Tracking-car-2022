@@ -1,0 +1,4 @@
+".\Objects\STARTUP.obj",
+".\Objects\mian.obj" 
+TO ".\Objects\Ñ­¼£³µ_2022_A" 
+PRINT(".\Listings\Ñ­¼£³µ_2022_A.m51") RAMSIZE(256) 

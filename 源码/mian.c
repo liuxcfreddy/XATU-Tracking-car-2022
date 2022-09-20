@@ -4,26 +4,26 @@
 -更新说明：
 		 -1.优化了路径判断的速度，改为使用switch的选择模式
 		  由之前的条件判断改为了数值判断。
-		  
+
 		 -2.舵机转向不可调，在程序内定为了30°~150°，如需
 		  更改转向角度请计算周期后直接在ctry函数内修改返回
 		  的高电平时间，相关知识请自行补充PWM的舵机控制。
-		  
+
 		 -3.增加了倒车巡线的功能，在丢失路径后，经过“防抖
 		  判断后”车辆会车头回正，倒车两个防抖周期的时间，
 		  然后前进一个防抖周期的时间，以此往复直到重新选线
 		  后继续前进。
-		  
+
 		 -4.程序分为A、B两个版本，主要为了应对感应板的线序
 		  可能出现凌乱。
-		  
+
 		 -5.对于感应板的判断要求更高，请尽可能校准感应板的
 		  基准电压。程序内对于非预定情况的判断是统一回正，
 		  所以当你将车悬空时车头是不会动的。只有符合仅一个
 		  灯亮时才会有舵机动作。
-		  
+
 		 -6.取消了干簧管的启动功能。
-		 
+
 		 -7.电机速度的由编码器控制，接通的数量越多，车越慢
 		  编码器数值为其对应的二进制码值。（简单理解为推上
 		  去的越多车越慢，拉下来的越多车越快，越往右权重越
@@ -96,17 +96,17 @@ void Timer0Value(unsigned int pwm)
 void Timer0_isr(void) interrupt 1 using 1
 {
     static unsigned char i = 1;	//静态变量：每次调用函数时保持上一次所赋的值，
-								//跟全局变量类似，不同是它只能用于此函数内部
+    //跟全局变量类似，不同是它只能用于此函数内部
     switch(i)
     {
     case 1:
         Car_Servo = 1;	//PWM控制脚高电平
-						//给定时器0赋值，计数Pwm0Duty个脉冲后产生中断，下次中断会进入下一个case语句
+        //给定时器0赋值，计数Pwm0Duty个脉冲后产生中断，下次中断会进入下一个case语句
         Timer0Value(Servo0PwmDuty);
         break;
     case 2:
         Car_Servo = 0;	//PWM控制脚低电平
-						//高脉冲结束后剩下的时间(20000-Pwm0Duty)全是低电平了，Pwm0Duty + (20000-Pwm0Duty) = 20000个脉冲正好为一个周期20毫秒
+        //高脉冲结束后剩下的时间(20000-Pwm0Duty)全是低电平了，Pwm0Duty + (20000-Pwm0Duty) = 20000个脉冲正好为一个周期20毫秒
         Timer0Value(20000-Servo0PwmDuty);
         i = 0;
         break;
@@ -183,20 +183,20 @@ void Car_Motor_Init()
 void Timer1_isr(void) interrupt 3 using 3
 {
     static unsigned char j = 1;	//静态变量：每次调用函数时保持上一次所赋的值，
-								//跟全局变量类似，不同是它只能用于此函数内部
+    //跟全局变量类似，不同是它只能用于此函数内部
     if(i<5000)//左侧参数就是判断丢失的时间，丢失判断防抖
     {
         switch(j)
         {
         case 1:
             Car_Motor_A1 = 1;	//PWM控制脚高电平
-								//给定时器0赋值，计数Pwm0Duty个脉冲后产生中断，下次中断会进入下一个case语句
+            //给定时器0赋值，计数Pwm0Duty个脉冲后产生中断，下次中断会进入下一个case语句
 
             Timer1Value(Motor0PwmDuty);	//高电平持续时间
             break;
         case 2:
             Car_Motor_A1 = 0;	//PWM控制脚低电平
-								//高脉冲结束后剩下的时间(20000-Pwm0Duty)全是低电平了，Pwm0Duty + (20000-Pwm0Duty) = 20000个脉冲正好为一个周期20毫秒
+            //高脉冲结束后剩下的时间(20000-Pwm0Duty)全是低电平了，Pwm0Duty + (20000-Pwm0Duty) = 20000个脉冲正好为一个周期20毫秒
             Timer1Value(10000-Motor0PwmDuty);//低电平持续时间
             j = 0;
             break;
@@ -209,13 +209,13 @@ void Timer1_isr(void) interrupt 3 using 3
         {
         case 1:
             Car_Motor_B1 = 1;	//PWM控制脚高电平
-								//给定时器0赋值，计数Pwm0Duty个脉冲后产生中断，下次中断会进入下一个case语句
+            //给定时器0赋值，计数Pwm0Duty个脉冲后产生中断，下次中断会进入下一个case语句
 
             Timer1Value(Motor0PwmDuty_daoche);	//高电平持续时间
             break;
         case 2:
             Car_Motor_B1 = 0;	//PWM控制脚低电平
-								//高脉冲结束后剩下的时间(20000-Pwm0Duty)全是低电平了，Pwm0Duty + (20000-Pwm0Duty) = 20000个脉冲正好为一个周期20毫秒
+            //高脉冲结束后剩下的时间(20000-Pwm0Duty)全是低电平了，Pwm0Duty + (20000-Pwm0Duty) = 20000个脉冲正好为一个周期20毫秒
             Timer1Value(10000-Motor0PwmDuty_daoche);
             j = 0;
             break;
@@ -232,28 +232,72 @@ void Timer1_isr(void) interrupt 3 using 3
 			会因为path的改变而选择合适的角度
 * 说    明：i++就是对轨道偏离的统计
 /**********************************************************/
+sbit AB=P2^3;
 int ctry(unsigned int parameter)
 {
-    switch(parameter)
+    if(AB==1)
     {
-    case 191:i=0;
-        return 2166;
-    case 223:i=0;
-        return 2000;
-    case 239:i=0;
-        return 1800;
-    case 247:i=0;
-        return 1500;//90°
-    case 251:i=0;
-        return 1200;
-    case 253:i=0;
-        return 1000;
-    case 254:i=0;
-        return 833;//30°
-    case 255:
-		i++;
-	return 1500;//检测无轨道就让车头对正帮助倒车
-	default:return Servo0PwmDuty;
+        switch(parameter)
+        {
+        case 191:
+            i=0;
+            return 2166;
+        case 223:
+            i=0;
+            return 2000;
+        case 239:
+            i=0;
+            return 1800;
+        case 247:
+            i=0;
+            return 1500;//90°
+        case 251:
+            i=0;
+            return 1200;
+        case 253:
+            i=0;
+            return 1000;
+        case 254:
+            i=0;
+            return 833;//30°
+        case 255:
+            i++;
+            return 1500;//检测无轨道就让车头对正帮助倒车
+        default:
+            return Servo0PwmDuty;
+        }
+    }
+    else
+    {
+        switch(parameter)
+        {
+        case 191:
+            i=0;
+            return 833;
+        case 223:
+            i=0;
+            return 1000;
+        case 239:
+            i=0;
+            return 1200;
+        case 247:
+            i=0;
+            return 1500;//90°
+        case 251:
+            i=0;
+            return 1800;
+        case 253:
+            i=0;
+            return 2000;
+        case 254:
+            i=0;
+            return 2166;
+        case 255:
+            i++;
+            return 1500;//检测无轨道就让车头对正帮助倒车
+        default:
+            return Servo0PwmDuty;
+        }
     }
 
 }
@@ -269,19 +313,19 @@ sbit LEDB=P2^2;//刹车灯的IO接口
 /**********************************************************/
 void daoche()
 {
-	if(i>5000)		//轨道丢失防抖
-        {   LEDA = 1;
-            LEDB = 0;
-            if(i>15000)//倒车持续的检测周期
-            {
-                i=0;
-            }
+    if(i>5000)		//轨道丢失防抖
+    {   LEDA = 1;
+        LEDB = 0;
+        if(i>15000)//倒车持续的检测周期
+        {
+            i=0;
         }
+    }
 
-        else
-        {   LEDA = 0;
-            LEDB = 0;
-        }
+    else
+    {   LEDA = 0;
+        LEDB = 0;
+    }
 }
 void main()
 {
@@ -293,7 +337,7 @@ void main()
         pow=P1;
         path=P0;
         Servo0PwmDuty=ctry(path);
-        Motor0PwmDuty=35*pow;
+        Motor0PwmDuty=30*pow;
         Motor0PwmDuty_daoche=30*pow;
         daoche();
     }
