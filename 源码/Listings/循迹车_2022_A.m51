@@ -1,8 +1,8 @@
-BL51 BANKED LINKER/LOCATER V6.22                                                        09/21/2022  10:39:13  PAGE 1
+BL51 BANKED LINKER/LOCATER V6.22                                                        09/21/2022  10:50:01  PAGE 1
 
 
 BL51 BANKED LINKER/LOCATER V6.22, INVOKED BY:
-D:\FILEGAME\KEIL\C51\BIN\BL51.EXE .\Objects\STARTUP.obj, .\Objects\mian.obj TO .\Objects\Ñ­¼£³µ_2022_A PRINT (.\Listings
+D:\FILEGAME\KEIL\C51\BIN\BL51.EXE .\Objects\STARTUP.obj, .\Objects\main.obj TO .\Objects\Ñ­¼£³µ_2022_A PRINT (.\Listings
 >> \Ñ­¼£³µ_2022_A.m51) RAMSIZE (256)
 
 
@@ -11,7 +11,7 @@ MEMORY MODEL: SMALL
 
 INPUT MODULES INCLUDED:
   .\Objects\STARTUP.obj (?C_STARTUP)
-  .\Objects\mian.obj (MIAN)
+  .\Objects\main.obj (MAIN)
   D:\FILEGAME\KEIL\C51\LIB\C51S.LIB (?C_INIT)
   D:\FILEGAME\KEIL\C51\LIB\C51S.LIB (?C?IMUL)
 
@@ -28,29 +28,29 @@ LINK MAP OF MODULE:  .\Objects\Ñ­¼£³µ_2022_A (?C_STARTUP)
             DATA    0010H     0002H     UNIT         _DATA_GROUP_
                     0012H     0006H                  *** GAP ***
             REG     0018H     0008H     ABSOLUTE     "REG BANK 3"
-            DATA    0020H     000EH     UNIT         ?DT?MIAN
+            DATA    0020H     000EH     UNIT         ?DT?MAIN
             IDATA   002EH     0001H     UNIT         ?STACK
 
             * * * * * * *   C O D E   M E M O R Y   * * * * * * *
             CODE    0000H     0003H     ABSOLUTE     
-            CODE    0003H     0003H     UNIT         ?PR?CAR_SERVO_INIT?MIAN
+            CODE    0003H     0003H     UNIT         ?PR?CAR_SERVO_INIT?MAIN
                     0006H     0005H                  *** GAP ***
             CODE    000BH     0003H     ABSOLUTE     
-            CODE    000EH     0009H     UNIT         ?PR?CAR_MOTOR_INIT?MIAN
+            CODE    000EH     0009H     UNIT         ?PR?CAR_MOTOR_INIT?MAIN
                     0017H     0004H                  *** GAP ***
             CODE    001BH     0003H     ABSOLUTE     
-            CODE    001EH     00BEH     UNIT         ?PR?_CTRY?MIAN
+            CODE    001EH     00BEH     UNIT         ?PR?_CTRY?MAIN
             CODE    00DCH     008CH     UNIT         ?C_C51STARTUP
-            CODE    0168H     006BH     UNIT         ?PR?TIMER1_ISR?MIAN
-            CODE    01D3H     0035H     UNIT         ?PR?TIMER0_ISR?MIAN
-            CODE    0208H     0035H     UNIT         ?PR?MAIN?MIAN
-            CODE    023DH     0025H     UNIT         ?PR?DAOCHE?MIAN
+            CODE    0168H     006BH     UNIT         ?PR?TIMER1_ISR?MAIN
+            CODE    01D3H     0035H     UNIT         ?PR?TIMER0_ISR?MAIN
+            CODE    0208H     0035H     UNIT         ?PR?MAIN?MAIN
+            CODE    023DH     0025H     UNIT         ?PR?DAOCHE?MAIN
             CODE    0262H     0017H     UNIT         ?C_INITSEG
-            CODE    0279H     0015H     UNIT         ?PR?INITTIMER0?MIAN
-            CODE    028EH     0015H     UNIT         ?PR?TIMER1INIT?MIAN
+            CODE    0279H     0015H     UNIT         ?PR?INITTIMER0?MAIN
+            CODE    028EH     0015H     UNIT         ?PR?TIMER1INIT?MAIN
             CODE    02A3H     0012H     UNIT         ?C?LIB_CODE
-            CODE    02B5H     0011H     UNIT         ?PR?_TIMER0VALUE?MIAN
-            CODE    02C6H     0011H     UNIT         ?PR?_TIMER1VALUE?MIAN
+            CODE    02B5H     0011H     UNIT         ?PR?_TIMER0VALUE?MAIN
+            CODE    02C6H     0011H     UNIT         ?PR?_TIMER1VALUE?MAIN
 
 
 
@@ -59,37 +59,37 @@ OVERLAY MAP OF MODULE:   .\Objects\Ñ­¼£³µ_2022_A (?C_STARTUP)
 
 SEGMENT                           DATA_GROUP 
   +--> CALLED SEGMENT           START    LENGTH
-BL51 BANKED LINKER/LOCATER V6.22                                                      09/21/2022  10:39:13  PAGE 2
+BL51 BANKED LINKER/LOCATER V6.22                                                      09/21/2022  10:50:01  PAGE 2
 
 
 -----------------------------------------------
 ?C_C51STARTUP                   -----    -----
-  +--> ?PR?MAIN?MIAN
+  +--> ?PR?MAIN?MAIN
   +--> ?C_INITSEG
 
-?PR?MAIN?MIAN                   -----    -----
-  +--> ?PR?CAR_SERVO_INIT?MIAN
-  +--> ?PR?CAR_MOTOR_INIT?MIAN
-  +--> ?PR?_CTRY?MIAN
-  +--> ?PR?DAOCHE?MIAN
+?PR?MAIN?MAIN                   -----    -----
+  +--> ?PR?CAR_SERVO_INIT?MAIN
+  +--> ?PR?CAR_MOTOR_INIT?MAIN
+  +--> ?PR?_CTRY?MAIN
+  +--> ?PR?DAOCHE?MAIN
 
-?PR?CAR_SERVO_INIT?MIAN         -----    -----
-  +--> ?PR?INITTIMER0?MIAN
+?PR?CAR_SERVO_INIT?MAIN         -----    -----
+  +--> ?PR?INITTIMER0?MAIN
 
-?PR?CAR_MOTOR_INIT?MIAN         -----    -----
-  +--> ?PR?TIMER1INIT?MIAN
+?PR?CAR_MOTOR_INIT?MAIN         -----    -----
+  +--> ?PR?TIMER1INIT?MAIN
 
-?PR?_CTRY?MIAN                  0010H    0002H
-
-*** NEW ROOT ***************************************************
-
-?PR?TIMER0_ISR?MIAN             -----    -----
-  +--> ?PR?_TIMER0VALUE?MIAN
+?PR?_CTRY?MAIN                  0010H    0002H
 
 *** NEW ROOT ***************************************************
 
-?PR?TIMER1_ISR?MIAN             -----    -----
-  +--> ?PR?_TIMER1VALUE?MIAN
+?PR?TIMER0_ISR?MAIN             -----    -----
+  +--> ?PR?_TIMER0VALUE?MAIN
+
+*** NEW ROOT ***************************************************
+
+?PR?TIMER1_ISR?MAIN             -----    -----
+  +--> ?PR?_TIMER1VALUE?MAIN
 
 
 
@@ -119,7 +119,7 @@ SYMBOL TABLE OF MODULE:  .\Objects\Ñ­¼£³µ_2022_A (?C_STARTUP)
   D:00A0H         SYMBOL        PPAGE_SFR
   D:0081H         SYMBOL        SP
   C:00DCH         SYMBOL        STARTUP1
-BL51 BANKED LINKER/LOCATER V6.22                                                      09/21/2022  10:39:13  PAGE 3
+BL51 BANKED LINKER/LOCATER V6.22                                                      09/21/2022  10:50:01  PAGE 3
 
 
   N:0000H         SYMBOL        XBPSTACK
@@ -135,7 +135,7 @@ SYMBOL TABLE OF MODULE:  .\Objects\Ñ­¼£³µ_2022_A (?C_STARTUP)
   C:00E5H         LINE#         196
   -------         ENDMOD        ?C_STARTUP
 
-  -------         MODULE        MIAN
+  -------         MODULE        MAIN
   C:0000H         SYMBOL        _ICE_DUMMY_
   D:0080H         PUBLIC        P0
   C:0003H         PUBLIC        Car_Servo_Init
@@ -179,7 +179,7 @@ SYMBOL TABLE OF MODULE:  .\Objects\Ñ­¼£³µ_2022_A (?C_STARTUP)
   C:01D3H         PUBLIC        Timer0_isr
   C:0168H         PUBLIC        Timer1_isr
   C:023DH         PUBLIC        daoche
-BL51 BANKED LINKER/LOCATER V6.22                                                      09/21/2022  10:39:13  PAGE 4
+BL51 BANKED LINKER/LOCATER V6.22                                                      09/21/2022  10:50:01  PAGE 4
 
 
   D:00C8H         PUBLIC        T2CON
@@ -239,7 +239,7 @@ SYMBOL TABLE OF MODULE:  .\Objects\Ñ­¼£³µ_2022_A (?C_STARTUP)
   C:0203H         LINE#         82
   -------         ENDPROC       TIMER0_ISR
   -------         PROC          _TIMER1VALUE
-BL51 BANKED LINKER/LOCATER V6.22                                                      09/21/2022  10:39:13  PAGE 5
+BL51 BANKED LINKER/LOCATER V6.22                                                      09/21/2022  10:50:01  PAGE 5
 
 
   D:0006H         SYMBOL        pwm
@@ -299,7 +299,7 @@ SYMBOL TABLE OF MODULE:  .\Objects\Ñ­¼£³µ_2022_A (?C_STARTUP)
   C:01A3H         LINE#         172
   C:01A5H         LINE#         174
   C:01A5H         LINE#         175
-BL51 BANKED LINKER/LOCATER V6.22                                                      09/21/2022  10:39:13  PAGE 6
+BL51 BANKED LINKER/LOCATER V6.22                                                      09/21/2022  10:50:01  PAGE 6
 
 
   C:01AEH         LINE#         176
@@ -359,7 +359,7 @@ SYMBOL TABLE OF MODULE:  .\Objects\Ñ­¼£³µ_2022_A (?C_STARTUP)
   C:0087H         LINE#         241
   C:0087H         LINE#         242
   C:008CH         LINE#         243
-BL51 BANKED LINKER/LOCATER V6.22                                                      09/21/2022  10:39:13  PAGE 7
+BL51 BANKED LINKER/LOCATER V6.22                                                      09/21/2022  10:50:01  PAGE 7
 
 
   C:0091H         LINE#         244
@@ -419,11 +419,11 @@ SYMBOL TABLE OF MODULE:  .\Objects\Ñ­¼£³µ_2022_A (?C_STARTUP)
   C:0234H         LINE#         308
   C:0238H         LINE#         309
   C:023BH         LINE#         310
-BL51 BANKED LINKER/LOCATER V6.22                                                      09/21/2022  10:39:13  PAGE 8
+BL51 BANKED LINKER/LOCATER V6.22                                                      09/21/2022  10:50:01  PAGE 8
 
 
   -------         ENDPROC       MAIN
-  -------         ENDMOD        MIAN
+  -------         ENDMOD        MAIN
 
   -------         MODULE        ?C?IMUL
   C:02A3H         PUBLIC        ?C?IMUL
