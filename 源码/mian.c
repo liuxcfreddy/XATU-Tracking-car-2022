@@ -194,19 +194,19 @@ void Timer1_isr(void) interrupt 3 using 3
 /***********************************************************
 * 名    称：ctry()
 * 功    能：轨道位置的判断
-* 入口参数：P0
+* 入口参数：P0 P2^3
 * 出口参数：输出轨道变量path，该参数为环境变量，舵机的中断处理
 			会因为path的改变而选择合适的角度
 * 说    明：i++就是对轨道偏离的统计
 /**********************************************************/
-sbit AB=P2^3;
+sbit AB=P2^3; // 舵机转向的标记端口
 int ctry(unsigned int parameter)
 {
     if(AB==1)
     {
         switch(parameter)
-        {
-        case 191:
+		{
+		case 199:
             i=0;
             return 2166;
         case 223:
@@ -232,7 +232,7 @@ int ctry(unsigned int parameter)
             return 1500;//检测无轨道就让车头对正帮助倒车
         default:
             return Servo0PwmDuty;
-        }
+		}
     }
     else
     {
@@ -240,7 +240,7 @@ int ctry(unsigned int parameter)
         {
         case 191:
             i=0;
-            return 833;
+            return 833;//30°
         case 223:
             i=0;
             return 1000;
@@ -285,7 +285,7 @@ void daoche()
         LEDB = 0;
         if(i>15000)//倒车持续的检测周期
         {
-            i=0;
+            i=0;//丢失标记清楚
         }
     }
 
@@ -304,8 +304,8 @@ void main()
         pow=P1;
         path=P0;
         Servo0PwmDuty=ctry(path);
-        Motor0PwmDuty=30*pow;
-        Motor0PwmDuty_daoche=30*pow;
+        Motor0PwmDuty=30*(pow);
+        Motor0PwmDuty_daoche=30*(pow);
         daoche();
     }
 }
