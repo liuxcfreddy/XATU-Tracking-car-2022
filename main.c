@@ -1,10 +1,13 @@
 /*驱动模块代码移植自唐杰学长*/
-#include "reg52.h"
+//#include "reg52.h"
 #include "intrins.h"
+#include "stc89c5xrc.h"
 /********以下为参数与环境变量区********/
-unsigned int path;					//红外对管反馈的环境变量
-unsigned int pow;					//电机驱动力度的调节
-unsigned int i=0;					//轨道丢失参数(当轨道丢失到一定的时间后启动倒车程序)
+unsigned int path;	//红外对管反馈的环境变量
+unsigned int power; //P1口读取常量
+unsigned int pow;	//电机驱动力度的调节
+unsigned int pos;	//舵机转向等级调节
+unsigned int i=0;	//轨道丢失参数(当轨道丢失到一定的时间后启动倒车程序)
 sbit  Car_Servo=P2^0;               // 舵机pwm控制
 
 void Delay(unsigned char time)		//@12.000MHz
@@ -189,6 +192,43 @@ void Timer1_isr(void) interrupt 3 using 3
         }
         j++;
 }
+
+
+void Timer2Init(void)		//1毫秒@12.000MHz
+{
+	T2MOD = 0;		//初始化模式寄存器
+	T2CON = 0;		//初始化控制寄存器
+	TL2 = 0x18;		//设置定时初始值
+	TH2 = 0xff;		//设置定时初始值
+	RCAP2L = 0x18;		//设置定时重载值
+	RCAP2H = 0xff;		//设置定时重载值
+	TR2 = 1;		//定时器2开始计时
+	PT2=0;
+	ET2=1;
+	EA=1;
+
+
+}
+void Car_scan_Init(void)
+{
+	Timer2Init();
+}
+/***********************************************************
+* 名    称： Timer1_isr() interrupt 5
+* 功    能： 时钟2中断处理
+* 入口参数： P1
+* 出口参数： 无
+* 说    明： 利用定时器2，对P1口进行高速扫描，提高舵机转向速度
+/**********************************************************/
+void Timer2_isr(void)interrupt 5
+{
+		TF2=0;
+        path=P0;
+		power=P1;
+		pow=(~power&0x0f);//低4位是速度
+		pos=((power>>4)&0x0f);//高4位是转向
+
+}
 /***********************************************************
 * 名    称：ctry()
 * 功    能：轨道位置的判断
@@ -206,25 +246,25 @@ int ctry(unsigned int parameter)
 		{
 		case 191:
             i=0;
-            return 2166;
+            return (1500+(500/(pos+1)));
         case 223:
             i=0;
-            return 2000;
+            return (1500+(332/(pos+1)));
         case 239:
             i=0;
-            return 1800;
+            return (1500+(166/(pos+1)));
         case 247:
             i=0;
             return 1500;//90°
         case 251:
             i=0;
-            return 1200;
+            return (1500-(166/(pos+1)));
         case 253:
             i=0;
-            return 1000;
+            return (1500-(332/(pos+1)));
         case 254:
             i=0;
-            return 833;//30°
+            return (1500-(500/(pos+1)));//30°
         case 255:
             i++;
             return 1500;//检测无轨道就让车头对正帮助倒车
@@ -235,34 +275,34 @@ int ctry(unsigned int parameter)
     else
     {
         switch(parameter)
-        {
-        case 191:
+		{
+		case 254:
             i=0;
-            return 833;//30°
-        case 223:
+            return (1500+(500/(pos+1)));
+        case 253:
             i=0;
-            return 1000;
-        case 239:
+            return (1500+(332/(pos+1)));
+        case 251:
             i=0;
-            return 1200;
+            return (1500+(166/(pos+1)));
         case 247:
             i=0;
             return 1500;//90°
-        case 251:
+        case 239:
             i=0;
-            return 1800;
-        case 253:
+            return (1500-(166/(pos+1)));
+        case 223:
             i=0;
-            return 2000;
-        case 254:
+            return (1500-(332/(pos+1)));
+        case 191:
             i=0;
-            return 2166;
+            return (1500-(500/(pos+1)));//30°
         case 255:
             i++;
             return 1500;//检测无轨道就让车头对正帮助倒车
         default:
             return Servo0PwmDuty;
-        }
+		}
     }
 
 }
@@ -278,21 +318,21 @@ sbit LEDB=P2^2;//刹车灯的IO接口
 /**********************************************************/
 void daoche()
 {
-    if(i>5000)		//轨道丢失防抖，开始倒车
+    if(i>3000)		//轨道丢失防抖，开始倒车
     {
 		LEDA = 1;
         LEDB = 0;
 		Car_Motor_B1=0;	 
 		Car_Motor_A1=1;
-		if(i==5001)
+		if(i==2001)
 		{
-			Motor0PwmDuty=10*(pow);
+			Motor0PwmDuty=100*(pow);
 			Delay(5);
-			Motor0PwmDuty=20*(pow);
+			Motor0PwmDuty=200*(pow);
 			Delay(8);
-			Motor0PwmDuty=30*(pow);
+			Motor0PwmDuty=300*(pow);
 		}
-        if(i>19000)//倒车持续的检测周期
+        if(i>20000)//倒车持续的检测周期
 		{
             i=0;	//丢失标记清除
         }
@@ -308,24 +348,23 @@ void daoche()
         LEDB = 0;
 		if(i==0)	
 		{
-			Motor0PwmDuty=10*(pow);//缓慢的软启动，防止打滑
+			Motor0PwmDuty=100*(pow);//缓慢的软启动，防止打滑
 			Delay(5);
-			Motor0PwmDuty=20*(pow);
+			Motor0PwmDuty=200*(pow);
 			Delay(5);
-			Motor0PwmDuty=30*(pow);
+			Motor0PwmDuty=300*(pow);
 		}
-		Motor0PwmDuty=30*(pow);
+		Motor0PwmDuty=300*(pow);
     }
 }
 void main()
 {
+	Car_scan_Init();
     Car_Servo_Init();
     Car_Motor_Init();
 
     while(1)
     {
-        pow=P1;
-        path=P0;
         Servo0PwmDuty=ctry(path);
         daoche();
     }
