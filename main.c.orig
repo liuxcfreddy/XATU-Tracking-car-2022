@@ -5,30 +5,8 @@
 unsigned int path;					//红外对管反馈的环境变量
 unsigned int pow;					//电机驱动力度的调节
 unsigned int i=0;					//轨道丢失参数(当轨道丢失到一定的时间后启动倒车程序)
+
 sbit  Car_Servo=P2^0;               // 舵机pwm控制
-
-void Delay(unsigned char time)		//@12.000MHz
-{
-	unsigned char T=0;
-	while(T==time)
-	{
-	unsigned char i, j, k;
-
-	_nop_();
-	_nop_();
-	i = 5;
-	j = 144;
-	k = 71;
-	do
-	{
-		do
-		{
-			while (--k);
-		} while (--j);
-	} while (--i);
-	T++;
-	}
-}
 
 unsigned int Servo0PwmDuty=1500;	//PWM脉冲宽度   1.5ms脉冲宽度  为舵机正中位置
 
@@ -85,9 +63,9 @@ void Timer0Value(unsigned int pwm)
 /**********************************************************/
 void Timer0_isr(void) interrupt 1 using 1
 {
-    static unsigned char i = 1;	//静态变量：每次调用函数时保持上一次所赋的值，
+    static unsigned char s = 1;	//静态变量：每次调用函数时保持上一次所赋的值，
     //跟全局变量类似，不同是它只能用于此函数内部
-    switch(i)
+    switch(s)
     {
     case 1:
         Car_Servo = 1;	//PWM控制脚高电平
@@ -98,10 +76,10 @@ void Timer0_isr(void) interrupt 1 using 1
         Car_Servo = 0;	//PWM控制脚低电平
         //高脉冲结束后剩下的时间(20000-Pwm0Duty)全是低电平了，Pwm0Duty + (20000-Pwm0Duty) = 20000个脉冲正好为一个周期20毫秒
         Timer0Value(20000-Servo0PwmDuty);
-        i = 0;
+        s = 0;
         break;
     }
-    i++;
+    s++;
 }
 
 sbit  Car_Motor_A1=P3^2; 	 // 电机PWM控制端
@@ -109,6 +87,7 @@ sbit  Car_Motor_EN1=P3^3;	 //电机使能控制端
 sbit  Car_Motor_B1=P3^4;	 // 电机控制端
 
 unsigned int Motor0PwmDuty=2750;		  //初始占空比为3000:7000
+unsigned int Motor0PwmDuty_daoche=2750;
 /***********************************************************
 * 名    称：Timer1Value(unsigned int pwm)
 * 功    能：给定时器1计数器赋值产生定时中断
@@ -166,33 +145,58 @@ void Car_Motor_Init()
 * 功    能： 时钟0中断处理
 * 入口参数： 无
 * 出口参数： 无
-* 说    明： 无
+* 说    明：i变量是轨道丢失的统计参数，根据i的计数量判断已经丢失轨道多久
+			其中程序是指5000个命令周期后执行倒车的计时器内容
 /**********************************************************/
 void Timer1_isr(void) interrupt 3 using 3
 {
-    static unsigned char j = 1;	//静态变量：每次调用函数时保持上一次所赋的值，
+    	
+	//静态变量：每次调用函数时保持上一次所赋的值，
     //跟全局变量类似，不同是它只能用于此函数内部
-	switch(j)
+    if(i<5000)//左侧参数就是判断丢失的时间，丢失判断防抖
+    {
+        static unsigned char j = 1;
+        switch(j)
         {
         case 1:
-            Car_Motor_EN1 = 1;	//PWM控制脚高电平
+            Car_Motor_A1 = 1;//PWM控制脚高电平
             //给定时器0赋值，计数Pwm0Duty个脉冲后产生中断，下次中断会进入下一个case语句
-
             Timer1Value(Motor0PwmDuty);	//高电平持续时间
             break;
         case 2:
-            Car_Motor_EN1 = 0;	//PWM控制脚低电平
+            Car_Motor_A1 = 0;	//PWM控制脚低电平
             //高脉冲结束后剩下的时间(20000-Pwm0Duty)全是低电平了，Pwm0Duty + (20000-Pwm0Duty) = 20000个脉冲正好为一个周期20毫秒
             Timer1Value(10000-Motor0PwmDuty);//低电平持续时间
             j = 0;
             break;
         }
         j++;
+    }
+    else
+    {
+        static unsigned char j = 1;
+        switch(j)
+        {
+        case 1:
+            Car_Motor_B1 = 1;	//PWM控制脚高电平
+            //给定时器0赋值，计数Pwm0Duty个脉冲后产生中断，下次中断会进入下一个case语句
+            Timer1Value(Motor0PwmDuty_daoche);	//高电平持续时间
+            break;
+        case 2:
+            Car_Motor_B1 = 0;	//PWM控制脚低电平
+            //高脉冲结束后剩下的时间(20000-Pwm0Duty)全是低电平了，Pwm0Duty + (20000-Pwm0Duty) = 20000个脉冲正好为一个周期20毫秒
+            Timer1Value(10000-Motor0PwmDuty_daoche);
+            j = 0;
+            break;
+        }
+        j++;
+    }
+
 }
 /***********************************************************
 * 名    称：ctry()
 * 功    能：轨道位置的判断
-* 入口参数：P0 P2^3
+* 入口参数：P0轨道信号输入 P2^3转向模式的选择
 * 出口参数：输出轨道变量path，该参数为环境变量，舵机的中断处理
 			会因为path的改变而选择合适的角度
 * 说    明：i++就是对轨道偏离的统计
@@ -278,43 +282,18 @@ sbit LEDB=P2^2;//刹车灯的IO接口
 /**********************************************************/
 void daoche()
 {
-    if(i>5000)		//轨道丢失防抖，开始倒车
-    {
-		LEDA = 1;
+    if(i>5000)		//轨道丢失防抖
+    {   LEDA = 1;
         LEDB = 0;
-		Car_Motor_B1=0;	 
-		Car_Motor_A1=1;
-		if(i==5001)
-		{
-			Motor0PwmDuty=10*(pow);
-			Delay(5);
-			Motor0PwmDuty=20*(pow);
-			Delay(8);
-			Motor0PwmDuty=30*(pow);
-		}
-        if(i>19000)//倒车持续的检测周期
-		{
-            i=0;	//丢失标记清除
+        if(i>15000)//倒车持续的检测周期
+        {
+            i=0;//丢失标记清楚
         }
-		
     }
 
-    else  			//正常前进
-		
-    {   
-		Car_Motor_B1=1;	 
-		Car_Motor_A1=0;
-		LEDA = 0;
+    else
+    {   LEDA = 0;
         LEDB = 0;
-		if(i==0)	
-		{
-			Motor0PwmDuty=10*(pow);//缓慢的软启动，防止打滑
-			Delay(5);
-			Motor0PwmDuty=20*(pow);
-			Delay(5);
-			Motor0PwmDuty=30*(pow);
-		}
-		Motor0PwmDuty=30*(pow);
     }
 }
 void main()
@@ -327,6 +306,8 @@ void main()
         pow=P1;
         path=P0;
         Servo0PwmDuty=ctry(path);
+        Motor0PwmDuty=30*(pow);
+        Motor0PwmDuty_daoche=30*(pow);
         daoche();
     }
 }
