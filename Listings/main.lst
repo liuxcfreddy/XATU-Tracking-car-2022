@@ -1,4 +1,4 @@
-C51 COMPILER V9.54   MAIN                                                                  09/25/2022 00:54:15 PAGE 1   
+C51 COMPILER V9.54   MAIN                                                                  09/25/2022 11:52:26 PAGE 1   
 
 
 C51 COMPILER V9.54, COMPILATION OF MODULE MAIN
@@ -62,7 +62,7 @@ line level    source
   49   1          TMOD &= 0xF0;               //设置定时器模式
   50   1          TMOD |= 0x01;               //设置定时器模式
   51   1          TL0 = 0xE0;                 //设置定时初值
-C51 COMPILER V9.54   MAIN                                                                  09/25/2022 00:54:15 PAGE 2   
+C51 COMPILER V9.54   MAIN                                                                  09/25/2022 11:52:26 PAGE 2   
 
   52   1          TH0 = 0xB1;                 //设置定时初值
   53   1          TF0 = 0;                    //清除TF0标志
@@ -126,7 +126,7 @@ line level    source
  105   2              break;
  106   2          }
  107   1          i++;
-C51 COMPILER V9.54   MAIN                                                                  09/25/2022 00:54:15 PAGE 3   
+C51 COMPILER V9.54   MAIN                                                                  09/25/2022 11:52:26 PAGE 3   
 
  108   1      }
  109          
@@ -190,7 +190,7 @@ line level    source
  163   1          Car_Motor_B1=0;      // 电机控制端一端为低
  164   1          Car_Motor_A1=0;      // 电机PWM控制端一端为低
  165   1          Timer1Init();       //电机定时器初始化
-C51 COMPILER V9.54   MAIN                                                                  09/25/2022 00:54:15 PAGE 4   
+C51 COMPILER V9.54   MAIN                                                                  09/25/2022 11:52:26 PAGE 4   
 
  166   1      }
  167          /***********************************************************
@@ -254,7 +254,7 @@ line level    source
  223          void Timer2_isr(void)interrupt 5
  224          {
  225   1                      TF2=0;
-C51 COMPILER V9.54   MAIN                                                                  09/25/2022 00:54:15 PAGE 5   
+C51 COMPILER V9.54   MAIN                                                                  09/25/2022 11:52:26 PAGE 5   
 
  226   1              path=P0;
  227   1                      power=P1;
@@ -318,7 +318,7 @@ line level    source
  285   3              case 251:
  286   3                  i=0;
  287   3                  return (1500+(166/(pos+1)));
-C51 COMPILER V9.54   MAIN                                                                  09/25/2022 00:54:15 PAGE 6   
+C51 COMPILER V9.54   MAIN                                                                  09/25/2022 11:52:26 PAGE 6   
 
  288   3              case 247:
  289   3                  i=0;
@@ -382,7 +382,7 @@ line level    source
  347   2                      LEDA = 0;
  348   2              LEDB = 0;
  349   2                      if(i==0)        
-C51 COMPILER V9.54   MAIN                                                                  09/25/2022 00:54:15 PAGE 7   
+C51 COMPILER V9.54   MAIN                                                                  09/25/2022 11:52:26 PAGE 7   
 
  350   2                      {
  351   3                              Motor0PwmDuty=100*(pow);//缓慢的软启动，防止打滑
