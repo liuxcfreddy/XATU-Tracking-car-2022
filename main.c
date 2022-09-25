@@ -267,7 +267,10 @@ int ctry(unsigned int parameter)
             return (1500-(500/(pos+1)));//30°
         case 255:
             i++;
+            if(i>3000)
+            {
             return 1500;//检测无轨道就让车头对正帮助倒车
+            }
         default:
             return Servo0PwmDuty;
 		}
