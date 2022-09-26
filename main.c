@@ -1,5 +1,5 @@
-/*驱动模块代码移植自唐杰学长*/
-//#include "reg52.h"
+/*驱动模块代码移植自唐杰学长，感谢2022届，唐杰学长的先前工作*/
+
 #include "intrins.h"
 #include "stc89c5xrc.h"
 /********以下为参数与环境变量区********/
@@ -328,7 +328,7 @@ void daoche()
         LEDB = 0;
 		Car_Motor_B1=0;	 
 		Car_Motor_A1=1;
-		if(i==2001)
+		if(i==3001)
 		{
 			Motor0PwmDuty=100*(pow);
 			Delay(5);
@@ -336,7 +336,7 @@ void daoche()
 			Delay(8);
 			Motor0PwmDuty=300*(pow);
 		}
-        if(i>20000)//倒车持续的检测周期
+        if(i>18000)//倒车持续的检测周期
 		{
             i=0;	//丢失标记清除
         }
