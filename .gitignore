@@ -1,7 +1,13 @@
-*.[Lenovo]
-*.[lst]
+
 *.[log]
 *.[obj]
 *.[lock]
-*.[htm]
-*.[51]
+
+
+Listings/ 
+Objects/
+!.hex 
+
+*.[Lenovo]
+*.[uvopt]
+*.[orig]
