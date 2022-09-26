@@ -238,6 +238,7 @@ void Timer2_isr(void)interrupt 5
 * 说    明：i++就是对轨道偏离的统计
 /**********************************************************/
 sbit AB=P2^3; // 舵机转向的标记端口
+int Zhuan_Jiao [3]={21,31,45};//最大转向角设置（左右对称，所以只需要一组，依次从小变大）
 int ctry(unsigned int parameter)
 {
     if(AB==1)
@@ -246,25 +247,25 @@ int ctry(unsigned int parameter)
 		{
 		case 191:
             i=0;
-            return (1500+(500/(pos+1)));
+            return (1500+(Zhuan_Jiao[2]*11/(pos+1)));
         case 223:
             i=0;
-            return (1500+(332/(pos+1)));
+            return (1500+(Zhuan_Jiao[1]*11/(pos+1)));
         case 239:
             i=0;
-            return (1500+(166/(pos+1)));
+            return (1500+(Zhuan_Jiao[0]*11/(pos+1)));
         case 247:
             i=0;
             return 1500;//90°
         case 251:
             i=0;
-            return (1500-(166/(pos+1)));
+            return (1500-(Zhuan_Jiao[0]*11/(pos+1)));
         case 253:
             i=0;
-            return (1500-(332/(pos+1)));
+            return (1500-(Zhuan_Jiao[1]*11/(pos+1)));
         case 254:
             i=0;
-            return (1500-(500/(pos+1)));//30°
+            return (1500-(Zhuan_Jiao[2]*11/(pos+1)));//30°
         case 255:
             i++;
             if(i>3000)
@@ -281,25 +282,25 @@ int ctry(unsigned int parameter)
 		{
 		case 254:
             i=0;
-            return (1500+(500/(pos+1)));
+            return (1500+(Zhuan_Jiao[2]*11/(pos+1)));
         case 253:
             i=0;
-            return (1500+(332/(pos+1)));
+            return (1500+(Zhuan_Jiao[1]*11/(pos+1)));
         case 251:
             i=0;
-            return (1500+(166/(pos+1)));
+            return (1500+(Zhuan_Jiao[0]*11/(pos+1)));
         case 247:
             i=0;
             return 1500;//90°
         case 239:
             i=0;
-            return (1500-(166/(pos+1)));
+            return (1500-(Zhuan_Jiao[0]*11/(pos+1)));
         case 223:
             i=0;
-            return (1500-(332/(pos+1)));
+            return (1500-(Zhuan_Jiao[1]*11/(pos+1)));
         case 191:
             i=0;
-            return (1500-(500/(pos+1)));//30°
+            return (1500-(Zhuan_Jiao[2]*11/(pos+1)));//30°
         case 255:
             i++;
             return 1500;//检测无轨道就让车头对正帮助倒车
