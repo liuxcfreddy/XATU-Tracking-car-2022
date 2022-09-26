@@ -334,7 +334,7 @@ void daoche()
 			Delay(5);
 			Motor0PwmDuty=200*(pow);
 			Delay(8);
-			Motor0PwmDuty=300*(pow);
+			Motor0PwmDuty=301*(pow);
 		}
         if(i>18000)//倒车持续的检测周期
 		{
