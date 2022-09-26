@@ -10,5 +10,4 @@ Objects/
 *.uvopt
 *.orig
 
-.gitignore
 .vscode
