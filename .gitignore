@@ -6,8 +6,9 @@
 Listings/ 
 Objects/
 !*.hex
-*.Lenovo
-*.uvopt
+/*.Lenovo
+/*.uvopt
+/*.uvgui.Lenovo
 *.orig
 
 .vscode
