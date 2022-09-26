@@ -7,7 +7,7 @@
 Listings/ 
 Objects/
 !*.hex
-*.[Lenovo]
-*.[uvopt]
-*.[orig]
+*.Lenovo
+*.uvopt
+*.orig
 .gitignore
