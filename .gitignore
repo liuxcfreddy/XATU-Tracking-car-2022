@@ -5,8 +5,7 @@
 
 
 Listings/ 
-Objects/
-!.hex 
+Objects/!*.[hex] 
 
 *.[Lenovo]
 *.[uvopt]
