@@ -375,9 +375,9 @@
               <FilePath>.\main.c</FilePath>
             </File>
             <File>
-              <FileName>STC89xx.h</FileName>
+              <FileName>STC89xRC.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\STC89xx.h</FilePath>
+              <FilePath>.\STC89xRC.h</FilePath>
             </File>
           </Files>
         </Group>
