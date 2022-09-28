@@ -7,7 +7,7 @@ unsigned int path;                 //红外对管反馈的环境变量
 unsigned int power;                // P1口读取常量
 unsigned char pow;                 //电机驱动力度的调节
 unsigned char pos;                 //舵机转向等级调节
-unsigned char posx;                //转向加力
+unsigned char posx;                //转向加力参数，请于void ctry（）函数内修改返回值
 unsigned int i = 0;                //轨道丢失参数(当轨道丢失到一定的时间后启动倒车程序)
 unsigned int Servo0PwmDuty = 1500; // PWM脉冲宽度   1.5ms脉冲宽度  为舵机正中位置
 unsigned int Motor0PwmDuty = 2750; //初始占空比为3000:7000
@@ -224,11 +224,11 @@ int ctry(unsigned int parameter)
         {
         case 191:
             i = 0;
-            posx = 3;
+            posx = 4;
             return 1500 + ((Zhuan_Jiao[2] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng; //右转
         case 223:
             i = 0;
-            posx = 2;
+            posx = 3;
             return 1500 + ((Zhuan_Jiao[1] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng;
         case 239:
             i = 0;
@@ -244,11 +244,11 @@ int ctry(unsigned int parameter)
             return 1500 - ((Zhuan_Jiao[0] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng;
         case 253:
             i = 0;
-            posx = 2;
+            posx = 3;
             return 1500 - ((Zhuan_Jiao[1] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng;
         case 254:
             i = 0;
-            posx = 3;
+            posx = 4;
             return 1500 - ((Zhuan_Jiao[2] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng; //左转
         case 255:
             i++;
@@ -308,7 +308,7 @@ int ctry(unsigned int parameter)
 /**********************************************************/
 void daoche()
 {
-    if (i > 5000) //轨道丢失防抖，开始倒车
+    if (i > 3000) //轨道丢失防抖，开始倒车
     {
         LEDA = 1;
         LEDB = 0;
@@ -318,7 +318,7 @@ void daoche()
         {
             i = 0; //丢失标记清除
         }
-        Motor0PwmDuty = 250 * (pow);
+        Motor0PwmDuty = 300 * (pow);
     }
 
     else //正常前进
