@@ -9,6 +9,8 @@ unsigned char pow;                 //电机驱动力度的调节
 unsigned char pos;                 //舵机转向等级调节
 unsigned char posx;                //转向加力参数，请于void ctry（）函数内修改返回值
 unsigned int i = 0;                //轨道丢失参数(当轨道丢失到一定的时间后启动倒车程序)
+unsigned int ik=4000;               //触发倒车的延迟时间（单位：2微秒-2us）
+unsigned int ikt=2;
 unsigned int Servo0PwmDuty = 1500; // PWM脉冲宽度   1.5ms脉冲宽度  为舵机正中位置
 unsigned int Motor0PwmDuty = 2750; //初始占空比为3000:7000
 
@@ -16,8 +18,8 @@ int Zhuan_Jiao[3] = {21, 31, 45}; //最大转向角设置（左右对称，所�
 int Zhong_Xin_Xiu_Zheng = -5;     //单位 度° 偏右就向左修正，减去一个角度。
 
 sbit AB = P2 ^ 3;            // 舵机转向的标记端口
-sbit Car_Motor_A1 = P3 ^ 2;  // 电机PWM控制端
-sbit Car_Motor_EN1 = P3 ^ 3; //电机使能控制端
+sbit Car_Motor_A1 = P3 ^ 2;  // 电机控制端
+sbit Car_Motor_EN1 = P3 ^ 3; //电机使能控制端（也是PWM输出路径）
 sbit Car_Motor_B1 = P3 ^ 4;  // 电机控制端
 sbit LEDA = P2 ^ 1;          //刹车灯的IO接口
 sbit LEDB = P2 ^ 2;          //刹车灯的IO接口
@@ -180,9 +182,9 @@ void Timer2Init(void) // 1毫秒@12.000MHz
     T2MOD = 0;     //初始化模式寄存器
     T2CON = 0;     //初始化控制寄存器
     TL2 = 0x18;    //设置定时初始值
-    TH2 = 0xff;    //设置定时初始值
+    TH2 = 0xfc;    //设置定时初始值
     RCAP2L = 0x18; //设置定时重载值
-    RCAP2H = 0xff; //设置定时重载值
+    RCAP2H = 0xfc; //设置定时重载值
     TR2 = 1;       //定时器2开始计时
     PT2 = 0;
     ET2 = 1;
@@ -252,7 +254,7 @@ int ctry(unsigned int parameter)
             return 1500 - ((Zhuan_Jiao[2] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng; //左转
         case 255:
             i++;
-            if (i > 3000)
+            if (i > ik)
             {
                 posx = 0;
                 return 1500 + 11 * Zhong_Xin_Xiu_Zheng; //检测无轨道就让车头对正帮助倒车
@@ -288,7 +290,7 @@ int ctry(unsigned int parameter)
             return 1500 + ((Zhuan_Jiao[2] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng; //左转
         case 255:
             i++;
-            if (i > 3000)
+            if (i > ik)
             {
                 return 1500 + 11 * Zhong_Xin_Xiu_Zheng; //检测无轨道就让车头对正帮助倒车
             }
@@ -306,21 +308,21 @@ int ctry(unsigned int parameter)
 * 说    明：检测到丢失后又执行10000个命令周期的倒车，无论是否
             重新寻找到路径都前进一段，重新巡线反复扫描，保证成功率
 /**********************************************************/
+
 void daoche()
 {
-    if (i > 3000) //轨道丢失防抖，开始倒车
+    if (i > ik) //轨道丢失防抖，开始倒车
     {
         LEDA = 1;
         LEDB = 0;
         Car_Motor_B1 = 0;
         Car_Motor_A1 = 1;
-        if (i > 15000) //倒车持续的检测周期
+        Motor0PwmDuty = 450 * (pow);
+        if (i > ik*ikt) //倒车持续的检测周期
         {
             i = 0; //丢失标记清除
         }
-        Motor0PwmDuty = 300 * (pow);
     }
-
     else //正常前进
 
     {

@@ -3,7 +3,7 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/**"
+                "D:\\filegame\\keil\\MinGW\bin"
             ],
             "defines": [
                 "_DEBUG",
