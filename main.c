@@ -224,7 +224,7 @@ int ctry(unsigned int parameter)
     {
         switch (parameter)
         {
-        case 0:
+        case 0x80:
             return 1500 + 11 * Zhong_Xin_Xiu_Zheng; // 90°
         case 191:
             i = 0;
@@ -269,7 +269,7 @@ int ctry(unsigned int parameter)
     {
         switch (parameter)
         {
-            case 0:
+            case 0x80: 
             return 1500 + 11 * Zhong_Xin_Xiu_Zheng; // 90°
         case 191:
             i = 0;
@@ -282,7 +282,7 @@ int ctry(unsigned int parameter)
             return 1500 - ((Zhuan_Jiao[0] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng;
         case 247:
             i = 0;
-            return 1500 + 11 * Zhong_Xin_Xiu_Zheng; // 90°
+            return 1500 - 11 * Zhong_Xin_Xiu_Zheng; // 90°
         case 251:
             i = 0;
             return 1500 + ((Zhuan_Jiao[0] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng;
