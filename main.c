@@ -8,6 +8,7 @@ unsigned int power;                // P1口读取常量
 unsigned char pow;                 //电机驱动力度的调节
 unsigned char pos;                 //舵机转向等级调节
 unsigned char posx;                //转向加力参数，请于void ctry（）函数内修改返回值
+unsigned char stop=1;              //自动驻车
 unsigned int i = 0;                //轨道丢失参数(当轨道丢失到一定的时间后启动倒车程序)
 unsigned int ik=4000;               //触发倒车的延迟时间（单位：2微秒-2us）
 unsigned int ikt=2;
@@ -225,33 +226,41 @@ int ctry(unsigned int parameter)
         switch (parameter)
         {
         case 0x80:
+            stop=0;
             return 1500 + 11 * Zhong_Xin_Xiu_Zheng; // 90°
         case 191:
             i = 0;
+            stop=1;
             posx = 4;
             return 1500 + ((Zhuan_Jiao[2] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng; //右转
         case 223:
             i = 0;
+            stop=1;
             posx = 3;
             return 1500 + ((Zhuan_Jiao[1] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng;
         case 239:
             i = 0;
+            stop=1;
             posx = 1;
             return 1500 + ((Zhuan_Jiao[0] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng;
         case 247:
             i = 0;
+            stop=1;
             posx = 0;
             return 1500 + 11 * Zhong_Xin_Xiu_Zheng; // 90°
         case 251:
             i = 0;
+            stop=1;
             posx = 1;
             return 1500 - ((Zhuan_Jiao[0] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng;
         case 253:
             i = 0;
+            stop=1;
             posx = 3;
             return 1500 - ((Zhuan_Jiao[1] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng;
         case 254:
             i = 0;
+            stop=1;
             posx = 4;
             return 1500 - ((Zhuan_Jiao[2] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng; //左转
         case 255:
@@ -269,28 +278,36 @@ int ctry(unsigned int parameter)
     {
         switch (parameter)
         {
-            case 0x80: 
+            case 0x80:
+            stop=0; 
             return 1500 + 11 * Zhong_Xin_Xiu_Zheng; // 90°
         case 191:
             i = 0;
+            stop=1;
             return 1500 - ((Zhuan_Jiao[2] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng; //右转
         case 223:
             i = 0;
+            stop=1;
             return 1500 - ((Zhuan_Jiao[1] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng;
         case 239:
             i = 0;
+            stop=1;
             return 1500 - ((Zhuan_Jiao[0] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng;
         case 247:
             i = 0;
+            stop=1;
             return 1500 - 11 * Zhong_Xin_Xiu_Zheng; // 90°
         case 251:
             i = 0;
+            stop=1;
             return 1500 + ((Zhuan_Jiao[0] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng;
         case 253:
             i = 0;
+            stop=1;
             return 1500 + ((Zhuan_Jiao[1] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng;
         case 254:
             i = 0;
+            stop=1;
             return 1500 + ((Zhuan_Jiao[2] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng; //左转
         case 255:
             i++;
@@ -334,7 +351,7 @@ void daoche()
         Car_Motor_A1 = 0;
         LEDA = 0;
         LEDB = 0;
-        Motor0PwmDuty = 300 * (pow + posx);
+        Motor0PwmDuty = (300 * (pow + posx))*stop;
     }
 }
 void main()
