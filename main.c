@@ -15,7 +15,7 @@ unsigned int Servo0PwmDuty = 1500; // PWM脉冲宽度   1.5ms脉冲宽度  为�
 unsigned int Motor0PwmDuty = 2750; //初始占空比为3000:7000
 
 int Zhuan_Jiao[3] = {21, 31, 45}; //最大转向角设置（左右对称，所以只需要一组，依次从小变大）
-int Zhong_Xin_Xiu_Zheng = -5;     //单位 度° 偏右就向左修正，减去一个角度。
+int Zhong_Xin_Xiu_Zheng = 0;     //单位 度° 偏右就向左修正，减去一个角度。
 
 sbit AB = P2 ^ 3;            // 舵机转向的标记端口
 sbit Car_Motor_A1 = P3 ^ 2;  // 电机控制端
