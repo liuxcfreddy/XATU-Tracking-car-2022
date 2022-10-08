@@ -1,6 +1,6 @@
 ##此文件夹为拉取推送的规则，编译过程中产生的备份不纳入push范围
-*.log
-*.lock
+/*.log
+/*.lock
 
 
 Listings/ 
