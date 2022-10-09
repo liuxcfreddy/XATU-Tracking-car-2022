@@ -12,3 +12,5 @@ Objects/
 *.orig
 
 .vscode/
+.vscode/*.log
+.vscode/*.lock

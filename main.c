@@ -1,6 +1,7 @@
 /*驱动模块代码移植自唐杰学长，感谢2022届，唐杰学长的先前工作*/
 
 #include "intrins.h"
+//#include "BIN.H"
 #include "stc89c5xrc.h"
 /********以下为参数与环境变量区********/
 unsigned int path;                 //红外对管反馈的环境变量

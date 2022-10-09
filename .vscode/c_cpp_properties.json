@@ -17,6 +17,7 @@
         {
             "name": "Target 1",
             "includePath": [
+                "f:\\c51\\寻迹车git\\XATU-Tracking-car-2022\\Library",
                 "D:\\filegame\\keil\\C51\\INC",
                 "f:\\c51\\寻迹车git\\XATU-Tracking-car-2022"
             ],
