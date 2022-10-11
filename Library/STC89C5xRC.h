@@ -11,7 +11,7 @@
 
 sfr  P4  = 0xe8;
 sbit P46 = P4^6;
-sbit P45 = P4^5;       //ISPÏÂÔØĞè¹´Ñ¡"ALE½ÅÓÃ×÷P4.5¿Ú"
+sbit P45 = P4^5;       //ISPä¸‹è½½éœ€å‹¾é€‰"ALEè„šç”¨ä½œP4.5å£"
 sbit P44 = P4^4;
 sbit P43 = P4^3;
 sbit P42 = P4^2;

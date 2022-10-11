@@ -1,7 +1,7 @@
 /*驱动模块代码移植自唐杰学长，感谢2022届，唐杰学长的先前工作*/
+/*please Use UTF-8 encoding */
 
 #include "intrins.h"
-//#include "BIN.H"
 #include "stc89c5xrc.h"
 /********以下为参数与环境变量区********/
 unsigned int path;                 //红外对管反馈的环境变量
@@ -19,13 +19,13 @@ unsigned int Motor0PwmDuty = 2750; //初始占空比为3000:7000
 int Zhuan_Jiao[3] = {21, 31, 45}; //最大转向角设置（左右对称，所以只需要一组，依次从小变大）
 int Zhong_Xin_Xiu_Zheng = 5;     //单位 度° 偏右就向左修正，减去一个角度。
 
-sbit AB = P2 ^ 3;            // 舵机转向的标记端口
-sbit Car_Motor_A1 = P3 ^ 2;  // 电机控制端
-sbit Car_Motor_EN1 = P3 ^ 3; //电机使能控制端（也是PWM输出路径）
-sbit Car_Motor_B1 = P3 ^ 4;  // 电机控制端
-sbit LEDA = P2 ^ 1;          //刹车灯的IO接口
-sbit LEDB = P2 ^ 2;          //刹车灯的IO接口
-sbit Car_Servo = P2 ^ 0;     // 舵机pwm控制
+sbit AB = P2^3;            // 舵机转向的标记端口
+sbit Car_Motor_A1 = P3^2;  // 电机控制端
+sbit Car_Motor_EN1 = P3^3; //电机使能控制端（也是PWM输出路径）
+sbit Car_Motor_B1 = P3^4;  // 电机控制端
+sbit LEDA = P2^1;          //刹车灯的IO接口
+sbit LEDB = P2^2;          //刹车灯的IO接口
+sbit Car_Servo = P2^0;     // 舵机pwm控制
 int ctry(unsigned int parameter);//函数声明
 /***********************************************************
 * 名    称：InitTimer0()
@@ -286,30 +286,37 @@ int ctry(unsigned int parameter)
         case 191:
             i = 0;
             stop=1;
+            posx = 4;
             return 1500 - ((Zhuan_Jiao[2] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng; //右转
         case 223:
             i = 0;
             stop=1;
+            posx = 3;
             return 1500 - ((Zhuan_Jiao[1] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng;
         case 239:
             i = 0;
             stop=1;
+            posx = 2;
             return 1500 - ((Zhuan_Jiao[0] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng;
         case 247:
             i = 0;
             stop=1;
+
             return 1500 - 11 * Zhong_Xin_Xiu_Zheng; // 90°
         case 251:
             i = 0;
             stop=1;
+            posx = 2;
             return 1500 + ((Zhuan_Jiao[0] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng;
         case 253:
             i = 0;
             stop=1;
+            posx = 3;
             return 1500 + ((Zhuan_Jiao[1] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng;
         case 254:
             i = 0;
             stop=1;
+            posx = 4;
             return 1500 + ((Zhuan_Jiao[2] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng; //左转
         case 255:
             i++;
