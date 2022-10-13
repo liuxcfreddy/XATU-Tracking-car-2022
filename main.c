@@ -15,59 +15,59 @@ unsigned int ik = 4000;            //触发倒车的延迟时间（单位：2微
 unsigned int ikt = 2;              //倒车时间倍数
 unsigned int Servo0PwmDuty = 1500; // PWM脉冲宽度   1.5ms脉冲宽度  为舵机正中位置
 unsigned int Motor0PwmDuty = 2750; //初始占空比为3000:7000
+
 bit stop = 1;                      //自动驻车
-bit mode = 0;
 
 int Zhuan_Jiao[3] = {21, 31, 45}; //最大转向角设置（左右对称，所以只需要一组，依次从小变大）
 int Zhong_Xin_Xiu_Zheng = 7;      //单位 度° 偏右就向左修正，减去一个角度。
 
 sbit AB = P2 ^ 3;                 // 舵机转向的标记端口
-sbit Car_Motor_A1 = P2 ^ 7;       // 电机控制端
-sbit Car_Motor_EN1 = P2 ^ 6;      //电机使能控制端（也是PWM输出路径）
-sbit Car_Motor_B1 = P2 ^ 5;       // 电机控制端
+sbit Car_Motor_A1 = P2^7;       // 电机控制端
+sbit Car_Motor_EN1 = P2^6;      //电机使能控制端（也是PWM输出路径）
+sbit Car_Motor_B1 = P2^5;       // 电机控制端
 sbit LEDA = P2 ^ 1;               //刹车灯的IO接口
 sbit LEDB = P2 ^ 2;               //刹车灯的IO接口
-sbit Car_Servo = P2 ^ 0;          // 舵机pwm控制
+sbit Car_Servo = P2^0;          // 舵机pwm控制
 int ctry(unsigned int parameter); //函数声明
-void Delay100ms()		//@12.000MHz
-{
-	unsigned char i, j, k;
+//void Delay100ms()		//@12.000MHz
+//{
+//	unsigned char i, j, k;
 
-	i = 5;
-	j = 144;
-	k = 71;
-	do
-	{
-		do
-		{
-			while (--k);
-		} while (--j);
-	} while (--i);
-}
+//	i = 5;
+//	j = 144;
+//	k = 71;
+//	do
+//	{
+//		do
+//		{
+//			while (--k);
+//		} while (--j);
+//	} while (--i);
+//}
 
-void INT0_Init(void)
-{
-    EX0 = 1;
-    IT0 = 0;
-    P32 = 0;
-    P36 = 0;
-    P37 = 0;
-}
+//void INT0_Init(void)
+//{
+//    EX0 = 1;
+//    IT0 = 0;
+//    P32 = 0;
+//    P36 = 0;
+//    P37 = 0;
+//}
 
-void INT0_sir(void) interrupt 0
-{
-    EA=0;
-}
-void INT1_Init(void)
-{
-    EX1=1;
-    IT1=0;
-    P33=0;
-}
-void INT1_sir(void) interrupt 2
-{
-    EA=1;
-}
+//void INT0_sir(void) interrupt 0
+//{
+//    EA=0;
+//}
+//void INT1_Init(void)
+//{
+//    EX1=1;
+//    IT1=0;
+//    P33=0;
+//}
+//void INT1_sir(void) interrupt 2
+//{
+//    EA=1;
+//}
 /***********************************************************
 * 名    称：InitTimer0()
 * 功    能：舵机时钟0初始化
