@@ -22,9 +22,9 @@ int Zhuan_Jiao[3] = {21, 31, 45}; //最大转向角设置（左右对称，所�
 int Zhong_Xin_Xiu_Zheng = 7;      //单位 度° 偏右就向左修正，减去一个角度。
 
 sbit AB = P2 ^ 3;                 // 舵机转向的标记端口
-sbit Car_Motor_A1 = P2^7;       // 电机控制端
-sbit Car_Motor_EN1 = P2^6;      //电机使能控制端（也是PWM输出路径）
-sbit Car_Motor_B1 = P2^5;       // 电机控制端
+sbit Car_Motor_A1 = P3^2;       // 电机控制端
+sbit Car_Motor_EN1 = P3^3;      //电机使能控制端（也是PWM输出路径）
+sbit Car_Motor_B1 = P3^4;       // 电机控制端
 sbit LEDA = P2 ^ 1;               //刹车灯的IO接口
 sbit LEDB = P2 ^ 2;               //刹车灯的IO接口
 sbit Car_Servo = P2^0;          // 舵机pwm控制
