@@ -8,15 +8,6 @@
     "files": [],
     "folders": [
       {
-        "name": "Source Group 1",
-        "files": [
-          {
-            "path": "main.c"
-          }
-        ],
-        "folders": []
-      },
-      {
         "name": "library",
         "files": [
           {
@@ -24,6 +15,15 @@
           },
           {
             "path": "Library/STC89C5xRC.h"
+          }
+        ],
+        "folders": []
+      },
+      {
+        "name": "Source Group 1",
+        "files": [
+          {
+            "path": "main.c"
           }
         ],
         "folders": []
