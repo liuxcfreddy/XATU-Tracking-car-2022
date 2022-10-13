@@ -20,13 +20,32 @@ int Zhuan_Jiao[3] = {21, 31, 45}; //最大转向角设置（左右对称，所�
 int Zhong_Xin_Xiu_Zheng = 5;     //单位 度° 偏右就向左修正，减去一个角度。
 
 sbit AB = P2^3;            // 舵机转向的标记端口
-sbit Car_Motor_A1 = P3^2;  // 电机控制端
-sbit Car_Motor_EN1 = P3^3; //电机使能控制端（也是PWM输出路径）
-sbit Car_Motor_B1 = P3^4;  // 电机控制端
+sbit Car_Motor_A1 = P2^7;  // 电机控制端
+sbit Car_Motor_EN1 = P2^6; //电机使能控制端（也是PWM输出路径）
+sbit Car_Motor_B1 = P2^5;  // 电机控制端
 sbit LEDA = P2^1;          //刹车灯的IO接口
 sbit LEDB = P2^2;          //刹车灯的IO接口
 sbit Car_Servo = P2^0;     // 舵机pwm控制
-int ctry(unsigned int parameter);//函数声明
+int ctry(unsigned int parameter);     //函数声明
+
+void INT0_sir(void) interrupt 0
+{
+stop=~stop;  //停车
+
+}
+void INT0_Init(void)
+{
+    EX0=1;
+    IT0=0;
+    P32=0;
+}
+
+
+
+
+
+
+
 /***********************************************************
 * 名    称：InitTimer0()
 * 功    能：舵机时钟0初始化
@@ -375,7 +394,7 @@ void main()
     Car_scan_Init();
     Car_Servo_Init();
     Car_Motor_Init();
-
+    INT0_Init();
     while (1)
     {
         Servo0PwmDuty = ctry(path);

@@ -1,0 +1,66 @@
+{
+  "name": "寻迹车2022",
+  "type": "C51",
+  "dependenceList": [],
+  "srcDirs": [],
+  "virtualFolder": {
+    "name": "<virtual_root>",
+    "files": [],
+    "folders": [
+      {
+        "name": "Source Group 1",
+        "files": [
+          {
+            "path": "main.c"
+          }
+        ],
+        "folders": []
+      },
+      {
+        "name": "library",
+        "files": [
+          {
+            "path": "Library/STARTUP.A51"
+          },
+          {
+            "path": "Library/STC89C5xRC.h"
+          }
+        ],
+        "folders": []
+      }
+    ]
+  },
+  "outDir": "Objects",
+  "deviceName": null,
+  "packDir": null,
+  "miscInfo": {
+    "uid": "00c4822367f997c4380a4b3d56935422"
+  },
+  "targets": {
+    "Target 1": {
+      "excludeList": [],
+      "toolchain": "Keil_C51",
+      "compileConfig": {
+        "options": "null"
+      },
+      "uploader": "Custom",
+      "uploadConfig": {
+        "bin": "",
+        "commandLine": "",
+        "eraseChipCommand": ""
+      },
+      "uploadConfigMap": {},
+      "custom_dep": {
+        "name": "default",
+        "incList": [
+          "D:/filegame/keil/C51/INC/STC",
+          "Library"
+        ],
+        "libList": [],
+        "sourceDirList": [],
+        "defineList": []
+      }
+    }
+  },
+  "version": "3.3"
+}
