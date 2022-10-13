@@ -4,48 +4,70 @@
 #include "intrins.h"
 #include "stc89c5xrc.h"
 /********以下为参数与环境变量区********/
-unsigned int path;                 //红外对管反馈的环境变量
-unsigned int power;                // P1口读取常量
-unsigned char pow;                 //电机驱动力度的调节
-unsigned char pos;                 //舵机转向等级调节
-unsigned char posx;                //转向加力参数，请于void ctry（）函数内修改返回值
-unsigned char stop=1;              //自动驻车
+unsigned int path;  //红外对管反馈的环境变量
+unsigned int power; // P1口读取常量
+unsigned char pow;  //电机驱动力度的调节
+unsigned char pos;  //舵机转向等级调节
+unsigned char posx; //转向加力参数，请于void ctry（）函数内修改返回值
+
 unsigned int i = 0;                //轨道丢失参数(当轨道丢失到一定的时间后启动倒车程序)
-unsigned int ik=4000;               //触发倒车的延迟时间（单位：2微秒-2us）
-unsigned int ikt=2;                 //倒车时间倍数
+unsigned int ik = 4000;            //触发倒车的延迟时间（单位：2微秒-2us）
+unsigned int ikt = 2;              //倒车时间倍数
 unsigned int Servo0PwmDuty = 1500; // PWM脉冲宽度   1.5ms脉冲宽度  为舵机正中位置
 unsigned int Motor0PwmDuty = 2750; //初始占空比为3000:7000
+bit stop = 1;                      //自动驻车
+bit mode = 0;
 
 int Zhuan_Jiao[3] = {21, 31, 45}; //最大转向角设置（左右对称，所以只需要一组，依次从小变大）
-int Zhong_Xin_Xiu_Zheng = 5;     //单位 度° 偏右就向左修正，减去一个角度。
+int Zhong_Xin_Xiu_Zheng = 7;      //单位 度° 偏右就向左修正，减去一个角度。
 
-sbit AB = P2^3;            // 舵机转向的标记端口
-sbit Car_Motor_A1 = P2^7;  // 电机控制端
-sbit Car_Motor_EN1 = P2^6; //电机使能控制端（也是PWM输出路径）
-sbit Car_Motor_B1 = P2^5;  // 电机控制端
-sbit LEDA = P2^1;          //刹车灯的IO接口
-sbit LEDB = P2^2;          //刹车灯的IO接口
-sbit Car_Servo = P2^0;     // 舵机pwm控制
-int ctry(unsigned int parameter);     //函数声明
+sbit AB = P2 ^ 3;                 // 舵机转向的标记端口
+sbit Car_Motor_A1 = P2 ^ 7;       // 电机控制端
+sbit Car_Motor_EN1 = P2 ^ 6;      //电机使能控制端（也是PWM输出路径）
+sbit Car_Motor_B1 = P2 ^ 5;       // 电机控制端
+sbit LEDA = P2 ^ 1;               //刹车灯的IO接口
+sbit LEDB = P2 ^ 2;               //刹车灯的IO接口
+sbit Car_Servo = P2 ^ 0;          // 舵机pwm控制
+int ctry(unsigned int parameter); //函数声明
+void Delay100ms()		//@12.000MHz
+{
+	unsigned char i, j, k;
+
+	i = 5;
+	j = 144;
+	k = 71;
+	do
+	{
+		do
+		{
+			while (--k);
+		} while (--j);
+	} while (--i);
+}
+
+void INT0_Init(void)
+{
+    EX0 = 1;
+    IT0 = 0;
+    P32 = 0;
+    P36 = 0;
+    P37 = 0;
+}
 
 void INT0_sir(void) interrupt 0
 {
-stop=~stop;  //停车
-
+    EA=0;
 }
-void INT0_Init(void)
+void INT1_Init(void)
 {
-    EX0=1;
-    IT0=0;
-    P32=0;
+    EX1=1;
+    IT1=0;
+    P33=0;
 }
-
-
-
-
-
-
-
+void INT1_sir(void) interrupt 2
+{
+    EA=1;
+}
 /***********************************************************
 * 名    称：InitTimer0()
 * 功    能：舵机时钟0初始化
@@ -68,6 +90,7 @@ void InitTimer0(void) // 20ms
 }
 void Car_Servo_Init() //舵机初始化
 {
+
     InitTimer0();
 }
 
@@ -101,19 +124,18 @@ void Timer0_isr(void) interrupt 1 using 1
 {
     static unsigned char i = 1; //静态变量：每次调用函数时保持上一次所赋的值，
     //跟全局变量类似，不同是它只能用于此函数内部
-    switch (i)
-    {
-    case 1:
-        Car_Servo = 1; // PWM控制脚高电平
-        //给定时器0赋值，计数Pwm0Duty个脉冲后产生中断，下次中断会进入下一个case语句
-        Timer0Value(Servo0PwmDuty);
-        break;
-    case 2:
-        Car_Servo = 0; // PWM控制脚低电平
-        //高脉冲结束后剩下的时间(20000-Pwm0Duty)全是低电平了，Pwm0Duty + (20000-Pwm0Duty) = 20000个脉冲正好为一个周期20毫秒
-        Timer0Value(20000 - Servo0PwmDuty);
-        i = 0;
-        break;
+    switch (i) {
+        case 1:
+            Car_Servo = 1; // PWM控制脚高电平
+            //给定时器0赋值，计数Pwm0Duty个脉冲后产生中断，下次中断会进入下一个case语句
+            Timer0Value(Servo0PwmDuty);
+            break;
+        case 2:
+            Car_Servo = 0; // PWM控制脚低电平
+            //高脉冲结束后剩下的时间(20000-Pwm0Duty)全是低电平了，Pwm0Duty + (20000-Pwm0Duty) = 20000个脉冲正好为一个周期20毫秒
+            Timer0Value(20000 - Servo0PwmDuty);
+            i = 0;
+            break;
     }
     i++;
 }
@@ -180,20 +202,19 @@ void Timer1_isr(void) interrupt 3 using 3
 {
     static unsigned char j = 1; //静态变量：每次调用函数时保持上一次所赋的值，
                                 //跟全局变量类似，不同是它只能用于此函数内部
-    switch (j)
-    {
-    case 1:
-        Car_Motor_EN1 = 1; // PWM控制脚高电平
-        //给定时器0赋值，计数Pwm0Duty个脉冲后产生中断，下次中断会进入下一个case语句
+    switch (j) {
+        case 1:
+            Car_Motor_EN1 = 1; // PWM控制脚高电平
+            //给定时器0赋值，计数Pwm0Duty个脉冲后产生中断，下次中断会进入下一个case语句
 
-        Timer1Value(Motor0PwmDuty); //高电平持续时间
-        break;
-    case 2:
-        Car_Motor_EN1 = 0; // PWM控制脚低电平
-        //高脉冲结束后剩下的时间(20000-Pwm0Duty)全是低电平了，Pwm0Duty + (20000-Pwm0Duty) = 20000个脉冲正好为一个周期20毫秒
-        Timer1Value(10000 - Motor0PwmDuty); //低电平持续时间
-        j = 0;
-        break;
+            Timer1Value(Motor0PwmDuty); //高电平持续时间
+            break;
+        case 2:
+            Car_Motor_EN1 = 0; // PWM控制脚低电平
+            //高脉冲结束后剩下的时间(20000-Pwm0Duty)全是低电平了，Pwm0Duty + (20000-Pwm0Duty) = 20000个脉冲正好为一个周期20毫秒
+            Timer1Value(10000 - Motor0PwmDuty); //低电平持续时间
+            j = 0;
+            break;
     }
     j++;
 }
@@ -229,7 +250,6 @@ void Timer2_isr(void) interrupt 5
     power = P1;
     pow = (~power & 0x0f); //低4位是速度
     pos = (power >> 4);    //高4位是转向
-
 }
 /***********************************************************
 * 名    称：ctry()
@@ -242,109 +262,102 @@ void Timer2_isr(void) interrupt 5
 
 int ctry(unsigned int parameter)
 {
-    if (AB == 1)
-    {
-        switch (parameter)
-        {
-        case 0x80:
-            stop=0;
-            return 1500 + 11 * Zhong_Xin_Xiu_Zheng; // 90°
-        case 191:
-            i = 0;
-            stop=1;
-            posx = 4;
-            return 1500 + ((Zhuan_Jiao[2] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng; //右转
-        case 223:
-            i = 0;
-            stop=1;
-            posx = 3;
-            return 1500 + ((Zhuan_Jiao[1] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng;
-        case 239:
-            i = 0;
-            stop=1;
-            posx = 1;
-            return 1500 + ((Zhuan_Jiao[0] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng;
-        case 247:
-            i = 0;
-            stop=1;
-            posx = 0;
-            return 1500 + 11 * Zhong_Xin_Xiu_Zheng; // 90°
-        case 251:
-            i = 0;
-            stop=1;
-            posx = 1;
-            return 1500 - ((Zhuan_Jiao[0] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng;
-        case 253:
-            i = 0;
-            stop=1;
-            posx = 3;
-            return 1500 - ((Zhuan_Jiao[1] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng;
-        case 254:
-            i = 0;
-            stop=1;
-            posx = 4;
-            return 1500 - ((Zhuan_Jiao[2] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng; //左转
-        case 255:
-            i++;
-            if (i > ik)
-            {
-                posx = 0;
-                return 1500 + 11 * Zhong_Xin_Xiu_Zheng; //检测无轨道就让车头对正帮助倒车
-            }
-        default:
-            return Servo0PwmDuty;
-        }
-    }
-    else
-    {
-        switch (parameter)
-        {
+    if (AB == 1) {
+        switch (parameter) {
             case 0x80:
-            stop=0; 
-            return 1500 + 11 * Zhong_Xin_Xiu_Zheng; // 90°
-        case 191:
-            i = 0;
-            stop=1;
-            posx = 4;
-            return 1500 - ((Zhuan_Jiao[2] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng; //右转
-        case 223:
-            i = 0;
-            stop=1;
-            posx = 3;
-            return 1500 - ((Zhuan_Jiao[1] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng;
-        case 239:
-            i = 0;
-            stop=1;
-            posx = 2;
-            return 1500 - ((Zhuan_Jiao[0] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng;
-        case 247:
-            i = 0;
-            stop=1;
-
-            return 1500 - 11 * Zhong_Xin_Xiu_Zheng; // 90°
-        case 251:
-            i = 0;
-            stop=1;
-            posx = 2;
-            return 1500 + ((Zhuan_Jiao[0] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng;
-        case 253:
-            i = 0;
-            stop=1;
-            posx = 3;
-            return 1500 + ((Zhuan_Jiao[1] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng;
-        case 254:
-            i = 0;
-            stop=1;
-            posx = 4;
-            return 1500 + ((Zhuan_Jiao[2] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng; //左转
-        case 255:
-            i++;
-            if (i > ik)
-            {
-                return 1500 + 11 * Zhong_Xin_Xiu_Zheng; //检测无轨道就让车头对正帮助倒车
-            }
-        default:
-            return Servo0PwmDuty;
+                stop = 0;
+                return 1500 + 11 * Zhong_Xin_Xiu_Zheng; // 90°
+            case 191:
+                i = 0;
+                stop = 1;
+                posx = 3;
+                return 1500 + ((Zhuan_Jiao[2] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng; //右转
+            case 223:
+                i = 0;
+                stop = 1;
+                posx = 2;
+                return 1500 + ((Zhuan_Jiao[1] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng;
+            case 239:
+                i = 0;
+                stop = 1;
+                posx = 1;
+                return 1500 + ((Zhuan_Jiao[0] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng;
+            case 247:
+                i = 0;
+                stop = 1;
+                posx = 0;
+                return 1500 + 11 * Zhong_Xin_Xiu_Zheng; // 90°
+            case 251:
+                i = 0;
+                stop = 1;
+                posx = 1;
+                return 1500 - ((Zhuan_Jiao[0] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng;
+            case 253:
+                i = 0;
+                stop = 1;
+                posx = 2;
+                return 1500 - ((Zhuan_Jiao[1] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng;
+            case 254:
+                i = 0;
+                stop = 1;
+                posx = 3;
+                return 1500 - ((Zhuan_Jiao[2] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng; //左转
+            case 255:
+                i++;
+                if (i > ik) {
+                    posx = 0;
+                    return 1500 + 11 * Zhong_Xin_Xiu_Zheng; //检测无轨道就让车头对正帮助倒车
+                }
+            default:
+                return Servo0PwmDuty;
+        }
+    } else {
+        switch (parameter) {
+            case 0x80:
+                stop = 0;
+                return 1500 + 11 * Zhong_Xin_Xiu_Zheng; // 90°
+            case 191:
+                i = 0;
+                stop = 1;
+                posx = 4;
+                return 1500 - ((Zhuan_Jiao[2] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng; //右转
+            case 223:
+                i = 0;
+                stop = 1;
+                posx = 3;
+                return 1500 - ((Zhuan_Jiao[1] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng;
+            case 239:
+                i = 0;
+                stop = 1;
+                posx = 2;
+                return 1500 - ((Zhuan_Jiao[0] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng;
+            case 247:
+                i = 0;
+                stop = 1;
+                posx = 0;
+                return 1500 - 11 * Zhong_Xin_Xiu_Zheng; // 90°
+            case 251:
+                i = 0;
+                stop = 1;
+                posx = 2;
+                return 1500 + ((Zhuan_Jiao[0] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng;
+            case 253:
+                i = 0;
+                stop = 1;
+                posx = 3;
+                return 1500 + ((Zhuan_Jiao[1] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng;
+            case 254:
+                i = 0;
+                stop = 1;
+                posx = 4;
+                return 1500 + ((Zhuan_Jiao[2] * 11) / pos) + 11 * Zhong_Xin_Xiu_Zheng; //左转
+            case 255:
+                i++;
+                if (i > ik) {
+                    return 1500 + 11 * Zhong_Xin_Xiu_Zheng; //检测无轨道就让车头对正帮助倒车
+                }
+            default:
+                return Servo0PwmDuty;
         }
     }
 }
@@ -366,37 +379,37 @@ void DaoChe_ZhuChe()
         LEDB = 0;
         Car_Motor_B1 = 0;
         Car_Motor_A1 = 1;
-        Motor0PwmDuty = 450 * (pow);
-        if (i > ik*ikt) //倒车持续的检测周期
+        if(i<ik+2000)
+        {
+        Motor0PwmDuty = 9999;
+        }
+        Motor0PwmDuty = 300*(pow);
+        if (i > ik * ikt) //倒车持续的检测周期
         {
             i = 0; //丢失标记清除
         }
-    }
-    else //正常前进
+    } else //正常前进
     {
-        if(stop==1)
-        {
-        Car_Motor_B1 = 1;
-        Car_Motor_A1 = 0;
-        LEDA = 0;
-        LEDB = 0;
-        Motor0PwmDuty = 300 * (pow + posx);
-        }
-        else
-        {
-            Car_Motor_A1=0;
-            Car_Motor_B1=0;
+        if (stop == 1) {
+            Car_Motor_B1 = 1;
+            Car_Motor_A1 = 0;
+            LEDA = 0;
+            LEDB = 0;
+            Motor0PwmDuty = 300 * (pow + posx);
+        } else {
+            Car_Motor_A1 = 0;
+            Car_Motor_B1 = 0;
         }
     }
 }
 void main()
 {
+   //INT0_Init();
+   //INT1_Init();
     Car_scan_Init();
     Car_Servo_Init();
     Car_Motor_Init();
-    INT0_Init();
-    while (1)
-    {
+    while (1) {
         Servo0PwmDuty = ctry(path);
         DaoChe_ZhuChe();
     }
