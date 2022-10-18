@@ -379,11 +379,13 @@ void DaoChe_ZhuChe()
         LEDB = 0;
         Car_Motor_B1 = 0;
         Car_Motor_A1 = 1;
-        if(i<ik+2000)
+        if(i<ik+500)
         {
-        Motor0PwmDuty = 9999;
+        Motor0PwmDuty = 6000;
         }
+        else{
         Motor0PwmDuty = 300*(pow);
+        }
         if (i > ik * ikt) //倒车持续的检测周期
         {
             i = 0; //丢失标记清除
