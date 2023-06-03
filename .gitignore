@@ -12,3 +12,5 @@
 *.orig
 /.vscode
 /*.json
+/*.d
+/*.o
