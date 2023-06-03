@@ -1,4 +1,0 @@
-../Core/Src/Moto.c:14:6:PWM_OUT_Init	8	static
-../Core/Src/Moto.c:22:6:PWM_SETDUTY	24	static
-../Core/Src/Moto.c:30:6:GO_Power_Set	32	static
-../Core/Src/Moto.c:44:6:BACK_Power_Set	32	static

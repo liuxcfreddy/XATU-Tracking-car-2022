@@ -1,4 +1,0 @@
-Moto.c:14:6:PWM_OUT_Init	1
-Moto.c:22:6:PWM_SETDUTY	1
-Moto.c:30:6:GO_Power_Set	5
-Moto.c:44:6:BACK_Power_Set	5

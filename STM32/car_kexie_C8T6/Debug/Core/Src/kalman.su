@@ -1,3 +1,0 @@
-../Core/Src/kalman.c:23:6:Kalman_Init	24	static
-../Core/Src/kalman.c:40:7:KalmanFilter	24	static
-../Core/Src/kalman.c:57:7:UserKalFil	24	static

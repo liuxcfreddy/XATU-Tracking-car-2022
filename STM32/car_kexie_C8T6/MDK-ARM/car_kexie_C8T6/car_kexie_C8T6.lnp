@@ -32,8 +32,6 @@
 "car_kexie_c8t6\stm32f1xx_hal_tim.o"
 "car_kexie_c8t6\stm32f1xx_hal_tim_ex.o"
 "car_kexie_c8t6\stm32f1xx_hal_uart.o"
-"car_kexie_c8t6\system_stm32f1xx_1.o"
+"car_kexie_c8t6\system_stm32f1xx.o"
 --library_type=microlib --strict --scatter "car_kexie_C8T6\car_kexie_C8T6.sct"
---summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
---info sizes --info totals --info unused --info veneers
---list "car_kexie_C8T6.map" -o car_kexie_C8T6\car_kexie_C8T6.axf
+--summary_stderr --info summarysizes -o car_kexie_C8T6\car_kexie_C8T6.axf
