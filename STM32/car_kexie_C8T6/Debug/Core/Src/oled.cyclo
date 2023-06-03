@@ -1,0 +1,14 @@
+oled.c:18:6:OLED_WriteCommand	1
+oled.c:30:6:OLED_WriteData	1
+oled.c:44:6:OLED_SetCursor	1
+oled.c:56:6:OLED_Clear	3
+oled.c:76:6:OLED_ShowChar	3
+oled.c:98:6:OLED_ShowString	2
+oled.c:111:10:OLED_Pow	2
+oled.c:129:6:OLED_ShowNum	2
+oled.c:146:6:OLED_ShowSignedNum	3
+oled.c:174:6:OLED_ShowHexNum	3
+oled.c:199:6:OLED_ShowBinNum	2
+oled.c:214:6:OLED_ShowChinese	3
+oled.c:235:6:OLED_ShowPicture	3
+oled.c:253:6:OLED_Init	1

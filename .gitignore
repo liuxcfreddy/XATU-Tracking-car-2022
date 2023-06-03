@@ -3,8 +3,8 @@
 /*.lock
 /.eide
 
-Listings/ 
-Objects/
+*/Listings/ 
+*/Objects/
 !*.hex
 /*.Lenovo
 /*.uvopt
@@ -12,4 +12,3 @@ Objects/
 *.orig
 /.vscode
 /*.json
-/XATU-Tracking-car-2022
