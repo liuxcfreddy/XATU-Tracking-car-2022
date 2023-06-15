@@ -1,0 +1,15 @@
+<RCC>
+    <qresource prefix="/new/prefix1">
+        <file>Pinture_and_ioc/校徽.png</file>
+        <file>Pinture_and_ioc/运行.svg</file>
+        <file>Pinture_and_ioc/蓝紫色科技插画元宇宙Plog.png</file>
+        <file>Pinture_and_ioc/小车.svg</file>
+        <file>Pinture_and_ioc/sys.ico</file>
+        <file>Pinture_and_ioc/背景.jpg</file>
+        <file>Pinture_and_ioc/立创EDA.png</file>
+        <file>Pinture_and_ioc/立创EDA1.png</file>
+    </qresource>
+    <qresource prefix="/music">
+        <file>Summoning_Glory.mp3</file>
+    </qresource>
+</RCC>

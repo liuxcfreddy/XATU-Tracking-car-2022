@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "*.m": "cpp",
+        "array": "cpp",
+        "limits": "cpp",
+        "type_traits": "cpp"
+    }
+}
